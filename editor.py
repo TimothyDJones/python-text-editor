@@ -17,16 +17,20 @@ class Cursor:
         self.col = col
     
     def up(self):
-        self.row -= 1
+        if self.row > 0:
+            self.row -= 1
         
-    def down(self):
-        self.row += 1
+    def down(self, buffer):
+        if self.row < len(buffer) - 1:
+            self.row += 1
         
-    def right(self):
-        self.col += 1
+    def right(self, buffer):
+        if self.col < len(buffer[self.row]) - 1:
+            self.col += 1
         
     def left(self):
-        self.col -= 1
+        if self.col > 0:
+            self.col -= 1
 
 def main(stdscr):
     parser = argparse.ArgumentParser()
@@ -51,9 +55,9 @@ def main(stdscr):
         elif k == "KEY_UP":
             cursor.up()
         elif k == "KEY_DOWN":
-            cursor.down()
+            cursor.down(buffer)
         elif k == "KEY_RIGHT":
-            cursor.right()
+            cursor.right(buffer)
         elif k == "KEY_LEFT":
             cursor.left()
         
