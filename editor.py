@@ -7,9 +7,27 @@ import curses
 import sys
 
 class Window:
-    def __init__(self, n_rows, n_cols):
+    def __init__(self, n_rows, n_cols, row=0, col=0):
         self.n_rows = n_rows
         self.n_cols = n_cols
+        self.row = row
+        self.col = col
+        
+    @property
+    def bottom(self):
+        return self.row + self.n_rows - 1
+    
+    def up(self, cursor):
+        if cursor.row == self.row - 1 and self.row > 0:
+            self.row -= 1
+            
+    def down(self, buffer, cursor):
+        if cursor.row == self.bottom + 1 and self.bottom:
+            self.row += 1
+    
+    # Convert cursor position relative to window (instead of screen)
+    def translate(self, cursor):
+        return cursor.row - self.row, cursor.col - self.col
 
 class Cursor:
     def __init__(self, row=0, col=0, col_hint=None):
@@ -66,21 +84,25 @@ def main(stdscr):
     
     while True:
         stdscr.erase()
-        for row, line in enumerate(buffer[:window.n_rows]):
+        for row, line in enumerate(buffer[window.row:window.n_rows]):
             stdscr.addstr(row, 0, line[:window.n_cols])
-        stdscr.move(cursor.row, cursor.col)
+        stdscr.move(*window.translate(cursor))
 
         k = stdscr.getkey()
         if k == "q":
             sys.exit(0)
         elif k == "KEY_UP":
-            cursor.up(buffer)
+            cursor = cursor.up(buffer)
+            window = window.up(cursor)
         elif k == "KEY_DOWN":
-            cursor.down(buffer)
+            cursor = cursor.down(buffer)
+            window = window.down(buffer, cursor)
         elif k == "KEY_RIGHT":
-            cursor.right(buffer)
+            cursor = cursor.right(buffer)
+            window = window.down(buffer, cursor)
         elif k == "KEY_LEFT":
-            cursor.left(buffer)
+            cursor = cursor.left(buffer)
+            window = window.up(cursor)
         
 if __name__ == "__main__":
     curses.wrapper(main)
