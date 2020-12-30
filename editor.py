@@ -11,7 +11,7 @@ class Window:
         self.n_rows = n_rows
         self.n_cols = n_cols
 
-def Cursor:
+class Cursor:
     def __init__(self, row=0, col=0):
         self.row = row
         self.col = col
@@ -31,7 +31,7 @@ def main(stdscr):
         stdscr.erase()
         for row, line in enumerate(buffer[:window.n_rows]):
             stdscr.addstr(row, 0, line[:window.n_cols])
-        stdscr.move(cursor.line, cursor.col)
+        stdscr.move(cursor.row, cursor.col)
 
         k = stdscr.getkey()
         if k == "q":
