@@ -15,6 +15,18 @@ class Cursor:
     def __init__(self, row=0, col=0):
         self.row = row
         self.col = col
+    
+    def up(self):
+        self.row -= 1
+        
+    def down(self):
+        self.row += 1
+        
+    def right(self):
+        self.col += 1
+        
+    def left(self):
+        self.col -= 1
 
 def main(stdscr):
     parser = argparse.ArgumentParser()
@@ -36,6 +48,14 @@ def main(stdscr):
         k = stdscr.getkey()
         if k == "q":
             sys.exit(0)
+        elif k == "KEY_UP":
+            cursor.up()
+        elif k == "KEY_DOWN":
+            cursor.down()
+        elif k == "KEY_RIGHT":
+            cursor.right()
+        elif k == "KEY_LEFT":
+            cursor.left()
         
 if __name__ == "__main__":
     curses.wrapper(main)
