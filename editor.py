@@ -11,6 +11,11 @@ class Window:
         self.n_rows = n_rows
         self.n_cols = n_cols
 
+def Cursor:
+    def __init__(self, row=0, col=0):
+        self.row = row
+        self.col = col
+
 def main(stdscr):
     parser = argparse.ArgumentParser()
     parser.add_argument("filename")
@@ -20,11 +25,13 @@ def main(stdscr):
         buffer = f.readlines()
     
     window = Window(curses.LINES - 1, curses.COLS - 1)
+    cursor = Cursor()
     
     while True:
         stdscr.erase()
         for row, line in enumerate(buffer[:window.n_rows]):
             stdscr.addstr(row, 0, line[:window.n_cols])
+        stdscr.move(cursor.line, cursor.col)
 
         k = stdscr.getkey()
         if k == "q":
