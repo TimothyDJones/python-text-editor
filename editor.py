@@ -12,9 +12,19 @@ class Window:
         self.n_cols = n_cols
 
 class Cursor:
-    def __init__(self, row=0, col=0):
+    def __init__(self, row=0, col=0, col_hint=None):
         self.row = row
-        self.col = col
+        self._col = col
+        self._col_hint = col if col_hint is None else col_hint
+    
+    @property
+    def col(self):
+        return self._col
+    
+    @col.setter
+    def col(self, col):
+        self._col = col
+        self._col_hint = col
     
     def up(self, buffer):
         if self.row > 0:
@@ -35,7 +45,7 @@ class Cursor:
             self.col -= 1
             
     def _clamp_col(self, buffer):
-        self.col = min(self.col, len(buffer[self.row]))
+        self._col = min(self._col_hint, len(buffer[self.row]))
 
 def main(stdscr):
     parser = argparse.ArgumentParser()
